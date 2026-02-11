@@ -18,6 +18,8 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(false);
 
+  const { user, logout } = useAuth(); // Assuming useAuth is imported
+
   const fetchNotifications = useCallback(async () => {
     try {
       setLoading(true);
@@ -28,15 +30,16 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       setNotifications(notifs);
       setUnreadCount(count);
     } catch (error: any) {
-      // Only log errors that are not authentication related (403/401)
-      // to avoid console spam during polling
-      if (error.response?.status !== 403 && error.response?.status !== 401) {
-        console.error('Failed to fetch notifications:', error);
+      // Handle authentication errors by logging out
+      if (error.response?.status === 403 || error.response?.status === 401) {
+         logout();
+         return;
       }
+      console.error('Failed to fetch notifications:', error);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [logout]);
 
   const markAsRead = async (notificationId: string) => {
     // Optimistic update
@@ -67,9 +70,6 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       fetchNotifications();
     }
   };
-
-
-  const { user } = useAuth(); // Assuming useAuth is imported
 
   // Poll for notifications every 30 seconds
   useEffect(() => {
