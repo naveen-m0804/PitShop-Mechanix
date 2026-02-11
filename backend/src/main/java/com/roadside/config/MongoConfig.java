@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 import org.springframework.lang.NonNull;
 
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
@@ -24,6 +26,11 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
     @NonNull
     protected String getDatabaseName() {
         return "repair_platform";
+    }
+
+    @Override
+    protected void configureClientSettings(MongoClientSettings.Builder builder) {
+        builder.applyConnectionString(new ConnectionString(mongoUri));
     }
     
     @PostConstruct
