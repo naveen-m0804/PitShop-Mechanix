@@ -10,6 +10,9 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { isShopOpen } from '@/lib/utils';
+import { useDispatch } from 'react-redux';
+import { setLocation } from '@/store/locationSlice';
+import { setNearbyShops } from '@/store/shopsSlice';
 
 const Dashboard: React.FC = () => {
   const [mechanics, setMechanics] = useState<Mechanic[]>([]);
@@ -24,6 +27,7 @@ const Dashboard: React.FC = () => {
   const [isRequestingAll, setIsRequestingAll] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const dispatch = useDispatch();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -36,10 +40,13 @@ const Dashboard: React.FC = () => {
 
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          resolve({
+          const coords = {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
-          });
+          };
+          resolve(coords);
+          // Sync with Redux
+          dispatch(setLocation({ latitude: coords.lat, longitude: coords.lng }));
         },
         (error) => {
           reject(error);
@@ -56,6 +63,8 @@ const Dashboard: React.FC = () => {
       // Increased radius to 20km as per requirement
       const data = await mechanicsApi.getNearby(lat, lng, 20); 
       setMechanics(data);
+      // Sync with Redux so MapView has data immediately
+      dispatch(setNearbyShops(data));
     } catch (err) {
       setError('Failed to fetch nearby mechanics. Please try again.');
       toast({

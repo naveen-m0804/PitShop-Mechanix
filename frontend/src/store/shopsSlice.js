@@ -1,19 +1,19 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../services/api';
+import { mechanicsApi } from '../lib/api';
 
 export const fetchNearbyShops = createAsyncThunk(
   'shops/fetchNearbyShops',
   async ({ lat, lng, radius = 20000, type = null }, { rejectWithValue }) => {
     try {
-      const params = { lat, lng, radius };
-      if (type) params.shopType = type;
-      const response = await api.get('/client/nearby-shops', { params });
-      if (response.data.success) {
-        return response.data.data;
-      }
-      return rejectWithValue('Failed to fetch shops');
+      // mechanicsApi uses radius in KM. The input here seems to be in meters (default 20000).
+      // MapView passes 5000000 (5000km).
+      const radiusKm = radius > 1000 ? radius / 1000 : radius;
+      
+      const data = await mechanicsApi.getNearby(lat, lng, radiusKm, type);
+      return data; // mechanicsApi.getNearby already returns the data array
     } catch (error) {
-      return rejectWithValue(error.message);
+       console.error('Fetch shops error:', error);
+       return rejectWithValue(error.response?.data?.message || error.message || 'Failed to fetch shops');
     }
   }
 );
