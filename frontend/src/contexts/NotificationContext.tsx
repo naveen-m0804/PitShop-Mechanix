@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import notificationApi, { Notification } from '../services/notificationApi';
+import { useAuth } from './AuthContext';
 
 interface NotificationContextType {
   notifications: Notification[];
@@ -67,12 +68,21 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     }
   };
 
+
+  const { user } = useAuth(); // Assuming useAuth is imported
+
   // Poll for notifications every 30 seconds
   useEffect(() => {
+    if (!user) {
+        setNotifications([]);
+        setUnreadCount(0);
+        return;
+    }
+
     fetchNotifications();
     const interval = setInterval(fetchNotifications, 30000);
     return () => clearInterval(interval);
-  }, [fetchNotifications]);
+  }, [fetchNotifications, user]);
 
   return (
     <NotificationContext.Provider
