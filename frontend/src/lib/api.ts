@@ -30,12 +30,24 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    // Handle 401 Unauthorized (Token invalid/expired)
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
       localStorage.removeItem('userId');
       localStorage.removeItem('role');
       window.location.href = '/login';
     }
+    
+    // Handle 403 Forbidden (Role mismatch)
+    if (error.response?.status === 403) {
+      console.error("Access Forbidden: You do not have permission to perform this action.");
+      // We can update the error message to be more user-friendly
+      error.message = "You are not authorized to perform this action.";
+      if (error.response.data && typeof error.response.data === 'string') {
+          error.message = error.response.data;
+      }
+    }
+
     return Promise.reject(error);
   }
 );
