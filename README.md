@@ -281,7 +281,17 @@ npm run dev
 
 ## 📷 Screenshots
 
-_(Add screenshots of your Dashboard, Map View, and Mobile Interface here)_
+![alt text](images/screencapture-localhost-3000-dashboard-2026-02-11-08_13_18.png)
+![alt text](images/screencapture-localhost-3000-dashboard-2026-02-11-08_15_24.png)
+![alt text](images/screencapture-localhost-3000-dashboard-2026-02-11-08_15_45.png)
+![alt text](images/screencapture-localhost-3000-login-2026-02-11-08_10_49.png)
+![alt text](images/screencapture-localhost-3000-map-2026-02-11-08_18_05.png)
+![alt text](images/screencapture-localhost-3000-mechanic-map-2026-02-11-08_19_00.png)
+![alt text](images/screencapture-localhost-3000-mechanic-dashboard-2026-02-11-08_18_42.png)
+![alt text](images/screencapture-localhost-3000-profile-2026-02-11-08_17_44.png)
+![alt text](images/screencapture-localhost-3000-profile-2026-02-11-08_19_32.png)
+![alt text](images/screencapture-localhost-3000-register-2026-02-11-08_12_19.png)
+![alt text](images/screencapture-localhost-3000-register-2026-02-11-08_12_43.png)
 
 ---
 
