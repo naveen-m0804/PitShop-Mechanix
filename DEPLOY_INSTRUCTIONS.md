@@ -65,25 +65,16 @@ Since this is a new repository, you first need to push your code to GitHub.
 
 ## 5. Setup Cron Job (Keep Alive Strategy)
 
-Render's free tier spins down services after 15 minutes of inactivity. To prevent this, follow these steps:
+Render Free Tier spins down services after 15 minutes of inactivity. To prevent this, you **MUST** use an external service to ping your backend.
 
-### Option A: Internal Scheduler (Implemented)
-
-We added a `KeepAliveScheduler` inside your backend.
-
-- **How it works**: Every 14 minutes, the backend sends a request to itself (`RENDER_EXTERNAL_URL`).
-- **Prerequisite**: The app must successfully start first.
-- **Limitation**: If the app deeply sleeps or restarts and doesn't wake up quickly, this scheduler stops running.
-
-### Option B: External Cron Job (Recommended)
-
-For 100% reliability, use a gratuitous external service to ping your backend.
+### External Cron Job (Required)
 
 1. Go to **[cron-job.org](https://cron-job.org/)** (it's free).
 2. Sign up and create a new Cron Job.
-3. **URL**: `https://pitshop-mechanix-backend.onrender.com/` (or your actual backend URL).
-4. **Schedule**: E.g., "Every 10 minutes".
-5. **Execution**: Standard HTTP GET request.
+3. **URL**: `https://pitshop-mechanix-backend.onrender.com/health`
+   - _Note_: We specifically exposed this `/health` endpoint for this purpose.
+4. **Schedule**: Select "Every 10 minutes".
+5. **Execution**: HTTP GET request.
 6. Save.
 
 This external "poke" ensures your app wakes up even if it was put to sleep, keeping it active indefinitely within the 750 free hours limit.

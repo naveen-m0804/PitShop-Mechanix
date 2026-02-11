@@ -36,7 +36,7 @@ public class SecurityConfig {
             )
             .authorizeHttpRequests(auth -> auth
                 // Public endpoints
-                .requestMatchers("/", "/error", "/favicon.ico").permitAll()
+                .requestMatchers("/", "/health", "/error", "/favicon.ico").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/v1/auth/**").permitAll()
                 .requestMatchers("/api/v1/mechanics/**").permitAll()

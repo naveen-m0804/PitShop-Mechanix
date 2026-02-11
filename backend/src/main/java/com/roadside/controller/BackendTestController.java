@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @RestController
 public class BackendTestController {
 
-    @GetMapping("/")
+    @GetMapping({"/", "/health"})
     public ResponseEntity<Map<String, Object>> checkHealth() {
         return ResponseEntity.ok(Map.of(
             "status", "UP",

@@ -12,11 +12,6 @@ spring:
       max-file-size: 10MB
       max-request-size: 10MB
 
-# App specific configuration
-app:
-  render:
-    url: ${RENDER_EXTERNAL_URL:http://localhost:${server.port:8080}}
-
 # Hugging Face Inference Providers Configuration
 # All values fetched from environment variables for security
 huggingface:
