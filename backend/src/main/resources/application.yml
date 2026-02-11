@@ -1,0 +1,72 @@
+spring:
+  application:
+    name: pitshop-mechanix
+
+  data:
+    mongodb:
+      uri: ${MONGODB_URI}
+      auto-index-creation: true
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+# App specific configuration
+app:
+  render:
+    url: ${RENDER_EXTERNAL_URL:http://localhost:${server.port:8080}}
+
+# Hugging Face Inference Providers Configuration
+# All values fetched from environment variables for security
+huggingface:
+  api:
+    token: ${HF_TOKEN}
+    model: ${HF_MODEL}
+
+server:
+  port: ${SERVER_PORT:8080}
+  error:
+    # SECURITY: Don't expose error details in production
+    include-message: never
+    include-binding-errors: never
+    include-stacktrace: never
+    include-exception: false
+
+# JWT Configuration - All values from environment
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION:86400000}
+
+# CORS Configuration
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS}
+  allowed-methods: GET,POST,PUT,DELETE,OPTIONS
+  allowed-headers: "*"
+  allow-credentials: true
+
+# WebSocket Configuration
+websocket:
+  endpoint: /ws
+  allowed-origins: ${CORS_ALLOWED_ORIGINS}
+
+# Geospatial Configuration
+geospatial:
+  default-radius: 20000
+  max-radius: 50000
+
+# Request Configuration
+request:
+  auto-expire-minutes: 15
+  scheduler-interval-ms: 60000
+
+# Logging - Reduce logging in production for security
+logging:
+  level:
+    com.pitshop: ${LOG_LEVEL:INFO}
+    com.roadside: ${LOG_LEVEL:INFO}
+    org.springframework.data.mongodb: ${LOG_LEVEL:WARN}
+    org.springframework.security: ${LOG_LEVEL:WARN}
+    org.springframework.web: ${LOG_LEVEL:WARN}
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%level] %logger{36} - %msg%n"
