@@ -12,6 +12,10 @@ import com.roadside.dto.UserDTO;
 import com.roadside.model.User;
 import com.roadside.repository.UserRepository;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseToken;
+import com.roadside.dto.FirebaseLoginRequest;
+
 @Service
 public class AuthService {
 
@@ -74,8 +78,6 @@ public class AuthService {
                 mechanicService.createShop(user.getId(), shopRequest);
             } catch (Exception e) {
                 log.error("Failed to create shop for user: {}", user.getId(), e);
-                // We don't rollback user creation, but maybe we should?
-                // For now, let's allow user to exist and they can maybe create shop later or contact support
             }
         }
         
@@ -117,6 +119,41 @@ public class AuthService {
         UserDTO userDTO = convertToDTO(user);
         
         return new AuthResponse(token, userDTO);
+    }
+
+    public AuthResponse firebaseLogin(FirebaseLoginRequest request) {
+        try {
+            // Verify Firebase Token
+            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(request.getIdToken());
+            String email = decodedToken.getEmail();
+            
+            if (email == null) {
+                throw new RuntimeException("Firebase token does not contain email.");
+            }
+
+            // Find existing user
+            User user = userRepository.findByEmail(email).orElse(null);
+            
+            if (user == null) {
+                // User not found - Do NOT auto-register. Throw explicit error for frontend to handle.
+                throw new RuntimeException("User not registered. Please sign up first.");
+            }
+            
+            log.info("Logging in existing user via Firebase: {}", email);
+            if (!user.getIsActive()) {
+                throw new RuntimeException("User account is inactive");
+            }
+
+            // Generate Internal JWT
+            String token = jwtService.generateToken(user.getId(), user.getRole());
+            
+            // Return response
+            return new AuthResponse(token, convertToDTO(user));
+
+        } catch (Exception e) {
+            log.error("Firebase login failed", e);
+            throw new RuntimeException(e.getMessage());
+        }
     }
     
     private UserDTO convertToDTO(User user) {

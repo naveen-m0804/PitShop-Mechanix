@@ -12,7 +12,7 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, googleLogin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
@@ -145,6 +145,52 @@ const Login: React.FC = () => {
               ) : (
                 'Sign In'
               )}
+            </Button>
+            
+            <div className="relative my-4">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-muted/20" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+              </div>
+            </div>
+
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full h-12 border-muted/20 bg-transparent text-foreground hover:bg-white/5 hover:text-white transition-colors"
+              onClick={async () => {
+                setIsLoading(true);
+                const result = await googleLogin('CLIENT'); // Default to CLIENT for now
+                setIsLoading(false);
+                
+                if (result.success) {
+                  toast({ title: 'Welcome!', description: 'Successfully logged in with Google' });
+                  if (result.role === 'MECHANIC') {
+                    navigate('/mechanic-dashboard');
+                  } else {
+                    navigate('/dashboard');
+                  }
+                } else {
+                  const errorMsg = result.error?.toLowerCase() || "";
+                  if (errorMsg.includes("not registered") || errorMsg.includes("sign up") || errorMsg.includes("not found")) {
+                    toast({ 
+                      title: 'Account Not Found', 
+                      description: 'This email is not registered. Please sign up first.', 
+                      variant: 'destructive',
+                      duration: 5000
+                    });
+                    navigate('/register');
+                  } else {
+                    toast({ title: 'Login failed', description: result.error, variant: 'destructive' });
+                  }
+                }
+              }}
+              disabled={isLoading}
+            >
+              <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" className="w-5 h-5 mr-2" alt="Google" />
+              Sign in with Google
             </Button>
           </form>
 

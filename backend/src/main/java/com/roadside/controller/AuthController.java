@@ -4,6 +4,7 @@ import com.roadside.dto.ApiResponse;
 import com.roadside.dto.AuthResponse;
 import com.roadside.dto.LoginRequest;
 import com.roadside.dto.RegisterRequest;
+import com.roadside.dto.FirebaseLoginRequest;
 import com.roadside.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,16 @@ public class AuthController {
     public ResponseEntity<ApiResponse<AuthResponse>> login(@Valid @RequestBody LoginRequest request) {
         try {
             AuthResponse response = authService.login(request);
+            return ResponseEntity.ok(ApiResponse.success("Login successful", response));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
+        }
+    }
+    
+    @PostMapping("/firebase-login")
+    public ResponseEntity<ApiResponse<AuthResponse>> firebaseLogin(@Valid @RequestBody FirebaseLoginRequest request) {
+        try {
+            AuthResponse response = authService.firebaseLogin(request);
             return ResponseEntity.ok(ApiResponse.success("Login successful", response));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));

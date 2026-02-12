@@ -66,3 +66,7 @@ logging:
     org.springframework.web: ${LOG_LEVEL:WARN}
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%level] %logger{36} - %msg%n"
+
+# Firebase Configuration
+firebase:
+  service-account-key: ${FIREBASE_SERVICE_ACCOUNT_KEY}
