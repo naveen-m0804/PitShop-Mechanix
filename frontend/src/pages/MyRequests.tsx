@@ -17,6 +17,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import PageLoader from '@/components/ui/PageLoader';
 
 export default function MyRequests() {
   const { user } = useAuth();
@@ -173,11 +174,7 @@ export default function MyRequests() {
   });
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-background to-primary/5">
-        <div className="loading-spinner" />
-      </div>
-    );
+    return <PageLoader />;
   }
 
 

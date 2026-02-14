@@ -1,11 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Wrench, Mail, Lock, Loader2, Car, Eye, EyeOff } from 'lucide-react';
+import { Wrench, Mail, Lock, Loader2, Car, Eye, EyeOff, MapPin, Clock, Shield, Smartphone, ChevronDown, Zap, Users } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+
+// Scroll Animation Component
+const ScrollReveal = ({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const domRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          setTimeout(() => setIsVisible(true), delay);
+        }
+      });
+    });
+    if (domRef.current) observer.observe(domRef.current);
+    return () => {
+      if (domRef.current) observer.unobserve(domRef.current);
+    };
+  }, [delay]);
+
+  return (
+    <div
+      ref={domRef}
+      className={`transition-all duration-1000 transform ${
+        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+      } ${className}`}
+    >
+      {children}
+    </div>
+  );
+};
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -60,36 +91,60 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-background">
-      {/* Background decorations */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/20 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-      </div>
-
-      {/* Floating car icon */}
-      <div className="absolute top-20 right-10 md:right-20 opacity-10 animate-float hidden md:block">
-        <Car className="w-32 h-32 text-primary" />
-      </div>
-
-      <div className="w-full max-w-md fade-in relative z-10">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl gradient-bg mb-4">
-            <Wrench className="w-8 h-8 text-primary-foreground" />
-          </div>
-          <h1 className="text-3xl font-display font-bold text-foreground">
-            PitShop<span className="gradient-text"> Mechanix</span>
-          </h1>
-          <p className="text-muted-foreground mt-2">Find mechanics near you, anytime</p>
+    <div className="min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-primary selection:text-primary-foreground">
+      <style>{`
+        @keyframes wiggle {
+          0%, 100% { transform: rotate(-3deg); }
+          50% { transform: rotate(3deg); }
+        }
+        .animate-wiggle { animation: wiggle 1s ease-in-out infinite; }
+        
+        @keyframes fadeInDown {
+          from { opacity: 0; transform: translateY(-20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-down { animation: fadeInDown 0.8s ease-out forwards; }
+      `}</style>
+      
+      {/* Hero / Login Section */}
+      <div className="min-h-screen flex flex-col relative bg-gradient-to-b from-background via-background to-primary/5">
+        
+        {/* Background decorations for Hero */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/20 rounded-full blur-3xl opacity-50" />
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl opacity-50" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
         </div>
 
-        {/* Login Card */}
-        <div className="glass-card p-8">
-          <h2 className="text-2xl font-display font-semibold text-foreground mb-6 text-center">
-            Welcome Back
-          </h2>
+        {/* Floating car icon */}
+        <div className="absolute top-20 right-10 md:right-20 opacity-10 animate-float hidden md:block">
+          <Car className="w-32 h-32 text-primary" />
+        </div>
+
+      {/* Creative Header */}
+      <div className="pt-12 pb-6 text-center z-10 animate-fade-in-down px-4">
+         <h1 className="text-5xl md:text-7xl font-black mb-4 tracking-tight font-display">
+           <span className="text-transparent bg-clip-text gradient-text drop-shadow-sm">
+             PitShop Mechanix
+           </span>
+         </h1>
+         <p className="text-lg text-muted-foreground max-w-2xl mx-auto px-4 mt-4">
+           Instant mechanical assistance, anywhere, anytime. Connecting stranded drivers with expert mechanics in real-time.
+         </p>
+      </div>
+
+      {/* Login Container */}
+      <div className="flex-grow flex items-center justify-center p-4 z-10 pb-20">
+        <div className="glass-card w-full max-w-md p-8 fade-in">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl gradient-bg mb-4">
+              <Wrench className="w-8 h-8 text-primary-foreground" />
+            </div>
+            <h2 className="text-2xl font-display font-semibold text-foreground">
+              Welcome Back
+            </h2>
+            <p className="text-muted-foreground mt-2">Find mechanics near you, anytime</p>
+          </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
@@ -104,7 +159,7 @@ const Login: React.FC = () => {
                   className="pl-11 input-glass h-12"
                   disabled={isLoading}
                 />
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               </div>
             </div>
 
@@ -120,11 +175,11 @@ const Login: React.FC = () => {
                   className="pl-11 pr-11 input-glass h-12"
                   disabled={isLoading}
                 />
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white hover:text-foreground transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                   tabIndex={-1}
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -162,7 +217,7 @@ const Login: React.FC = () => {
               className="w-full h-12 border-muted/20 bg-transparent text-foreground hover:bg-white/5 hover:text-white transition-colors"
               onClick={async () => {
                 setIsLoading(true);
-                const result = await googleLogin('CLIENT'); // Default to CLIENT for now
+                const result = await googleLogin('CLIENT');
                 setIsLoading(false);
                 
                 if (result.success) {
@@ -204,6 +259,74 @@ const Login: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Scroll Indicator */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce text-muted-foreground/50">
+        <ChevronDown className="w-8 h-8" />
+      </div>
+      </div>
+
+      {/* Project Information Section */}
+      <section className="py-24 px-4 relative bg-card/30 backdrop-blur-sm border-t border-white/5">
+        <div className="max-w-6xl mx-auto">
+          <ScrollReveal>
+            <div className="text-center mb-16">
+              <span className="text-primary font-bold tracking-widest text-sm uppercase mb-2 block font-display">Why Choose Us</span>
+              <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-6 font-display">Revolutionizing Breakdown Support</h2>
+              <div className="w-24 h-1 bg-gradient-to-r from-transparent via-primary to-transparent mx-auto"></div>
+              <p className="mt-6 text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+                PitShop Mechanix isn't just an app; it's your safety net on the road. We combine real-time GPS tracking with a vetted network of expert mechanics to get you back on track faster than ever before.
+              </p>
+            </div>
+          </ScrollReveal>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              { 
+                icon: MapPin, 
+                title: "Real-Time Tracking", 
+                desc: "Live GPS tracking of your mechanic's location and estimated arrival time.",
+                color: "text-blue-400"
+              },
+              { 
+                icon: Clock, 
+                title: "Fast Response", 
+                desc: "Average response time of under 30 minutes in supported urban areas.",
+                color: "text-green-400"
+              },
+              { 
+                icon: Shield, 
+                title: "Trusted Pros", 
+                desc: "Every mechanic is verified, background-checked, and rated by users like you.",
+                color: "text-purple-400"
+              },
+              { 
+                icon: Smartphone, 
+                title: "Seamless App", 
+                desc: "Easy booking, transparent pricing, and instant communication all in one place.",
+                color: "text-pink-400" 
+              }
+            ].map((feature, index) => (
+              <ScrollReveal key={index} delay={index * 150} className="h-full">
+                <div className="bg-card/50 border border-white/5 p-8 rounded-2xl h-full hover:bg-card/80 transition-colors duration-300 hover:-translate-y-2 transform">
+                  <div className={`p-4 rounded-xl bg-background/50 inline-block mb-6 ${feature.color}`}>
+                    <feature.icon className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-xl font-bold text-foreground mb-3 font-display">{feature.title}</h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    {feature.desc}
+                  </p>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-8 text-center text-muted-foreground text-sm border-t border-white/5 bg-background/50">
+        <p>&copy; {new Date().getFullYear()} PitShop Mechanix. All rights reserved.</p>
+      </footer>
     </div>
   );
 };

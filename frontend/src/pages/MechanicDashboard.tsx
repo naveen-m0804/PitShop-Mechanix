@@ -6,6 +6,7 @@ import Navbar from '@/components/Navbar';
 import { useToast } from '@/hooks/use-toast';
 import AIAssistant from '@/components/AIAssistant';
 import socketService from '../services/socket';
+import PageLoader from '@/components/ui/PageLoader';
 
 const MechanicDashboard: React.FC = () => {
   const [incomingRequests, setIncomingRequests] = useState<RepairRequest[]>([]);
@@ -255,11 +256,7 @@ const MechanicDashboard: React.FC = () => {
   );
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-foreground text-xl">Loading...</div>
-      </div>
-    );
+    return <PageLoader />;
   }
 
   return (
