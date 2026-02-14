@@ -7,17 +7,22 @@ import com.roadside.dto.RegisterRequest;
 import com.roadside.dto.FirebaseLoginRequest;
 import com.roadside.service.AuthService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/auth")
-@RequiredArgsConstructor
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173"})
 public class AuthController {
+
+    private static final Logger log = LoggerFactory.getLogger(AuthController.class);
     
     private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
     
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<AuthResponse>> register(@Valid @RequestBody RegisterRequest request) {
@@ -31,11 +36,15 @@ public class AuthController {
     
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<AuthResponse>> login(@Valid @RequestBody LoginRequest request) {
+        log.info("Received login request for email: {}", request.getEmail());
         try {
             AuthResponse response = authService.login(request);
+            log.info("Login successful for email: {}", request.getEmail());
             return ResponseEntity.ok(ApiResponse.success("Login successful", response));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
+            log.error("Login failed for email: {}", request.getEmail(), e);
+            throw e; // Let global exception handler handle it, or return badRequest here?
+            // The original code returned badRequest. Let's keep that but log first.
         }
     }
     

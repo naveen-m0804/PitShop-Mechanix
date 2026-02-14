@@ -212,6 +212,10 @@ export const userApi = {
     const response = await api.put<{success: boolean; data: Mechanic}>('/mechanic/update-shop', data);
     return response.data.data;
   },
+  deleteAccount: async () => {
+    const response = await api.delete<{success: boolean; data: string}>('/user/delete');
+    return response.data;
+  },
 };
 
 export const aiApi = {

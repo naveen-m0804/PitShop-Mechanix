@@ -32,6 +32,9 @@ public interface MechanicShopRepository extends MongoRepository<MechanicShop, St
     List<MechanicShop> findNearbyShopsByType(double latitude, double longitude, double maxDistance, String shopType);
 
     // Filter by shop type (include unavailable)
+    // Filter by shop type (include unavailable)
     @Query("{ 'location': { $near: { $geometry: { type: 'Point', coordinates: [?1, ?0] }, $maxDistance: ?2 } }, 'shopTypes': ?3 }")
     List<MechanicShop> findNearbyShopsByTypeAll(double latitude, double longitude, double maxDistance, String shopType);
+
+    void deleteByUserId(String userId);
 }

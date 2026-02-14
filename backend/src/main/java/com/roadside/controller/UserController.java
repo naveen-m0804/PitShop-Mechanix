@@ -17,20 +17,24 @@ import com.roadside.model.MechanicShop;
 import com.roadside.model.User;
 import com.roadside.repository.MechanicShopRepository;
 import com.roadside.repository.UserRepository;
+import com.roadside.service.UserService;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 @RestController
 @RequestMapping("/api/v1/user")
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173"})
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173", "http://localhost:3001", "http://localhost:5174"})
 public class UserController {
     
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     private final UserRepository userRepository;
     private final MechanicShopRepository mechanicShopRepository;
+    private final UserService userService;
 
-    public UserController(UserRepository userRepository, MechanicShopRepository mechanicShopRepository) {
+    public UserController(UserRepository userRepository, MechanicShopRepository mechanicShopRepository, UserService userService) {
         this.userRepository = userRepository;
         this.mechanicShopRepository = mechanicShopRepository;
+        this.userService = userService;
     }
     
     @GetMapping("/profile")
@@ -86,6 +90,22 @@ public class UserController {
             log.error("Error updating user profile", e);
             return ResponseEntity.internalServerError()
                     .body(ApiResponse.error("Failed to update profile: " + e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<ApiResponse<String>> deleteAccount(Authentication authentication) {
+        try {
+            String userId = authentication.getName();
+            log.info("Request to delete account for user: {}", userId);
+            
+            userService.deleteUser(userId);
+            
+            return ResponseEntity.ok(ApiResponse.success("Account deleted successfully"));
+        } catch (Exception e) {
+            log.error("Error deleting account", e);
+            return ResponseEntity.internalServerError()
+                    .body(ApiResponse.error("Failed to delete account: " + e.getMessage()));
         }
     }
 }

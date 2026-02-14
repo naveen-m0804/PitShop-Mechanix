@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { userApi, UserProfile } from '@/lib/api';
 import { isShopOpen, formatTime12Hour } from '@/lib/utils';
-import { User, Wrench, Phone, Mail, Clock, MapPin, Star, Edit2, X, Check, FileText, Settings } from 'lucide-react';
+import { User, Wrench, Phone, Mail, Clock, MapPin, Star, Edit2, X, Check, FileText, Settings, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -11,7 +12,8 @@ import { useToast } from '@/hooks/use-toast';
 import Navbar from '@/components/Navbar';
 
 export default function Profile() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -179,6 +181,28 @@ export default function Profile() {
       });
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (window.confirm("Are you sure you want to delete your account? This action cannot be undone and will delete all your data.")) {
+        if (window.confirm("Please confirm again: Do you really want to delete your account?")) {
+            try {
+                await userApi.deleteAccount();
+                toast({
+                    title: 'Account Deleted',
+                    description: 'Your account has been successfully deleted.',
+                });
+                logout();
+                navigate('/');
+            } catch (error: any) {
+                toast({
+                    title: 'Error',
+                    description: error.response?.data?.message || 'Failed to delete account',
+                    variant: 'destructive',
+                });
+            }
+        }
     }
   };
 
@@ -530,6 +554,27 @@ export default function Profile() {
               </div>
             </div>
           </div>
+        )}
+        {/* Danger Zone */}
+        {!isEditing && (
+            <div className="glass-card p-8 fade-in border-red-500/20">
+            <div className="flex items-center gap-3 mb-4">
+                <AlertTriangle className="w-6 h-6 text-red-500" />
+                <h2 className="text-2xl font-display font-bold text-red-500">
+                Danger Zone
+                </h2>
+            </div>
+            <p className="text-muted-foreground mb-4">
+                Once you delete your account, there is no going back. Please be certain.
+            </p>
+            <Button 
+                variant="destructive" 
+                onClick={handleDeleteAccount}
+                className="bg-red-500 hover:bg-red-600 text-white"
+            >
+                Delete Account
+            </Button>
+            </div>
         )}
       </div>
       </div>

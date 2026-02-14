@@ -15,4 +15,6 @@ public interface LocationTrackingRepository extends MongoRepository<LocationTrac
     Optional<LocationTracking> findFirstByRequestIdOrderByTimestampDesc(String requestId);
 
     void deleteByRequestId(String requestId);
+    
+    void deleteByMechanicUserId(String mechanicUserId);
 }

@@ -34,4 +34,7 @@ public interface RepairRequestRepository extends MongoRepository<RepairRequest, 
 
     @org.springframework.data.mongodb.repository.Query("{ '$or': [ { 'mechanicUserId': ?0 }, { 'rejectedBy': ?0 } ] }")
     List<RepairRequest> findByMechanicHistory(String userId);
+
+    void deleteByClientId(String clientId);
+    void deleteByMechanicUserId(String mechanicUserId);
 }

@@ -34,7 +34,9 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         
         String authHeader = request.getHeader("Authorization");
-        
+        String requestURI = request.getRequestURI();
+        logger.info("Processing request: " + request.getMethod() + " " + requestURI);
+
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             try {
                 String token = authHeader.substring(7);
@@ -51,10 +53,15 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                             );
                     
                     SecurityContextHolder.getContext().setAuthentication(authentication);
+                    logger.info("Authenticated user: " + userId + " with role: " + role);
+                } else {
+                    logger.warn("Token is expired");
                 }
             } catch (Exception e) {
                 logger.error("JWT authentication failed: " + e.getMessage());
             }
+        } else {
+            logger.debug("No valid Authorization header found");
         }
         
         filterChain.doFilter(request, response);

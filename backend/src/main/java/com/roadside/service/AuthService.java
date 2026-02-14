@@ -2,7 +2,7 @@ package com.roadside.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder; // Restored import
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.roadside.dto.AuthResponse;
@@ -24,12 +24,13 @@ public class AuthService {
     private final UserRepository userRepository;
     private final JWTService jwtService;
     private final MechanicService mechanicService;
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthService(UserRepository userRepository, JWTService jwtService, MechanicService mechanicService) {
+    public AuthService(UserRepository userRepository, JWTService jwtService, MechanicService mechanicService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.jwtService = jwtService;
         this.mechanicService = mechanicService;
+        this.passwordEncoder = passwordEncoder;
     }
     
     public AuthResponse register(RegisterRequest request) {

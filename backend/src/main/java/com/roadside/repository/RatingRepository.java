@@ -15,4 +15,7 @@ public interface RatingRepository extends MongoRepository<Rating, String> {
     boolean existsByUserIdAndRequestId(String userId, String requestId);
     
     java.util.Optional<Rating> findByUserIdAndMechanicShopId(String userId, String mechanicShopId);
+
+    void deleteByUserId(String userId);
+    void deleteByMechanicShopId(String mechanicShopId);
 }

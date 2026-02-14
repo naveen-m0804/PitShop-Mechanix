@@ -18,7 +18,7 @@ import com.roadside.service.RepairRequestService;
 
 @RestController
 @RequestMapping("/api/v1/requests")
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173"})
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173", "http://localhost:3001", "http://localhost:5174"})
 public class RepairRequestController {
 
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(RepairRequestController.class);
