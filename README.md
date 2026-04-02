@@ -52,6 +52,8 @@ The result is **PitShop Mechanix**, a fully functional, production-ready applica
 
 ## 📊 System Architecture & Diagrams
 
+![PitShop_Mechanix_Architecture_FlowDiagram](https://github.com/user-attachments/assets/9a146257-d89b-494c-abac-c02403523c21)
+
 ### 1. Class Diagram
 
 This diagram illustrates the core object-oriented structure of our backend, highlighting the relationships between Users, Shops, and Requests.
